@@ -1,0 +1,10 @@
+# Visual Studio Code
+.vscode/
+
+# Only include example configuration files & notify.json
+config/*.json
+!config/*.example.json
+!config/notify.json
+
+# Data files
+data/

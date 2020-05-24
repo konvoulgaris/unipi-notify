@@ -1,0 +1,7 @@
+{
+    "address": "smtp.gmail.com",
+    "ssl": 465,
+    "tls": 587,
+    "email": "example@gmail.com",
+    "password": "secure"
+}

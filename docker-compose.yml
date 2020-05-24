@@ -1,0 +1,15 @@
+version: '3'
+services:
+    unipi-students-api:
+        restart: always
+        build:
+            context: ./api
+        container_name: unipi-students-api
+        ports:
+        - 69:8080
+    unipi-notify:
+        restart: always
+        build: .
+        container_name: unipi-notify
+        depends_on:
+        - unipi-students-api
