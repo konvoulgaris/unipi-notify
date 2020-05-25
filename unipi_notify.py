@@ -20,7 +20,7 @@ def get_grades(username, password):
     response = ""
 
     try:
-        response = requests.post("http://unipi-students-api:69/api/grades", json=json).json()
+        response = requests.post("http://unipi-students-api:8080/api/grades", json=json).json()
     except Exception as e:
         print("Failed to get grades.", e)
         time.sleep(5 * 60)

@@ -6,7 +6,7 @@ A service that notifies you when new grades are released.
 ***
 
 ## Example e-mail
-![Image of e-mail](./img/example_email.png)
+![Image of e-mail](./images/example_email.png)
 
 ## Quick start
 This section will show you how to install and run the program.
