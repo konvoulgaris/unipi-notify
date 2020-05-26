@@ -1,10 +1,13 @@
 # Visual Studio Code
 .vscode/
 
-# Only include example configuration files & notify.json
-config/*.json
-!config/*.example.json
-!config/notify.json
+# Python virtual environment
+env/
 
-# Data files
+# Only include example configuration files & settings.json
+config/*.json
+!config/settings.json
+!config/*.example.json
+
+# Data folder
 data/

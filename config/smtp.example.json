@@ -1,7 +1,6 @@
 {
     "address": "smtp.gmail.com",
-    "ssl": 465,
-    "tls": 587,
+    "ssl_port": 465,
     "email": "example@gmail.com",
     "password": "secure"
 }

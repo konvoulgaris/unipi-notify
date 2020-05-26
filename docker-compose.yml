@@ -10,5 +10,9 @@ services:
         build: .
         container_name: unipi-notify
         restart: always
+        environment:
+        - PATH_PREFIX=/usr/src/unipi-notify/
+        - API_URL=unipi-students-api
+        - REFRESH=30
         depends_on:
         - unipi-students-api

@@ -1,9 +1,15 @@
 # unipi-notify
 A service that notifies you when new grades are released.
 
+## Table of Contents
 ***
-### Please be reasonable with the frequency of requests. This wasn't intended to be a service that will notify you immediately.
-***
+* [Example e-mail](#example-e-mail)
+* [Quick start](#quick-start)
+    * [Requirements](#Requirements)
+    * [Edit configuration files](#edit-configuration-files)
+    * [Example configuration files](#example-configuration-files)
+* [Testing](#testing)
+* [Credits](#credits)
 
 ## Example e-mail
 ![Image of e-mail](./images/example_email.png)
@@ -33,15 +39,14 @@ with the details of your SMTP server and Unipi account respectively.
 
 ***
 
-#### Example (Google account)
+### Example configuration files (Google account)
 Your configuration files should look like this.
 
 *smtp.json*
 ```json
 {
     "address": "smtp.gmail.com",
-    "ssl": 465,
-    "tls": 587,
+    "ssl_port": 465,
     "email": "john@gmail.com",
     "password": "app password"
 }
@@ -62,13 +67,14 @@ After doing that, simply run the app using:
 sudo docker-compose up
 ```
 
-That's it! You can also modify `notify.json` but that is not recommended.
+And... that's it!
 
 ## Testing
-This has only been tested on Ubuntu 20.04 LTS.
+While this was only tested on an Ubuntu 20.04 LTS system, this should run on all platform thanks to Docker.
 
-## Thanks
+## Credits
+### Thanks
 Special thanks to [Nikos Sklavounos](https://github.com/NickSklA) for creating the API.
 
 ### Disclaimer
-This service is neither affiliated nor endosered in any way by the University of Piraeus. This was created solely of convience
+This service is neither affiliated nor endosered in any way by the University of Piraeus. This was created solely for convience purposes.
