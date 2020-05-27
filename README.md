@@ -26,12 +26,10 @@ Make sure you have everything that is mentioned below installed before proceedin
 - Google account (or some SMTP service)
 ```
 
-### Edit configuration files
-Go to the config folder and rename  
-`smtp.example.json -> smtp.json`  
-and  
-`user.example.json -> user.json`  
-with the details of your SMTP server and Unipi account respectively.
+### Configuration
+
+Open `docker-compose.yaml` file and locate the environment setting of `unipi-notify` (#L15 and forward). 
+Add your settings there, before running the app.
 
 #### Note
 + If you have a Google account, you have a [free basic SMTP server](https://support.google.com/a/answer/176600?hl=en) already included.
@@ -39,35 +37,16 @@ with the details of your SMTP server and Unipi account respectively.
 
 ***
 
-### Example configuration files (Google account)
-Your configuration files should look like this.
-
-*smtp.json*
-```json
-{
-    "address": "smtp.gmail.com",
-    "ssl_port": 465,
-    "email": "john@gmail.com",
-    "password": "app password"
-}
-```
-*user.json*
-```json
-{
-    "username": "E12345",
-    "password": "unipi password"
-}
-```
-
-***
 
 After doing that, simply run the app using:
 
 ```
-sudo docker-compose up
+docker-compose up
 ```
 
 And... that's it!
+
+In case you change the env vars after a while, don't forget to rebuild with `docker-compose up --build`.
 
 ## Testing
 While this was only tested on an Ubuntu 20.04 LTS system, this should run on all platform thanks to Docker.

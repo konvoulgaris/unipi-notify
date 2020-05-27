@@ -1,5 +1,4 @@
 import requests
-import sys
 import json
 import jsonschema
 import time
@@ -10,22 +9,16 @@ import os
 PATH_PREFIX = str(os.getenv("PATH_PREFIX", ""))
 URL = str(os.getenv("API_URL", "localhost"))
 REFRESH = int(os.getenv("REFRESH", "30"))
+USERNAME = os.getenv("USERNAME", None)
+PASSWORD = os.getenv("PASSWORD", None)
+SMTP_ADDRESS = os.getenv("SMTP_ADDRESS", None)
+SMTP_SSLPORT = os.getenv("SMTP_SSLPORT", None)
+SMTP_EMAIL = os.getenv("SMTP_EMAIL", None)
+SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", None)
 
-SMTP_SCHEMA = {
-    "address": { "type": "string" },
-    "ssl_port": { "type": "number" },
-    "email": { "type": "string" },
-    "password": { "type": "string" },
-}
+assert USERNAME is not None, 'Cannot proceed without username'
+assert PASSWORD is not None, 'Cannot proceed without password'
 
-SMTP = None
-
-USER_SCHEMA = {
-    "username": { "type": "string" },
-    "password": { "type": "string" }
-}
-
-USER = None
 
 # Load JSON and validate against schema
 def get_json(path, schema=None):
@@ -41,21 +34,27 @@ def get_json(path, schema=None):
     except Exception as e:
         print("Failed to get JSON!\n", e)
         return None
-    
+
     return data
+
 
 # Get latest grades
 def get_grades():
     data = None
+    payload = {
+        "username": USERNAME,
+        "password": PASSWORD
+    }
 
     try:
-        response = requests.post("http://" + URL + ":8080/api/grades", json=USER)
+        response = requests.post("http://" + URL + ":8080/api/grades", json=payload)
         data = response.json()
     except Exception as e:
         print("Failed to get grades!\n", e)
         return None
 
     return data
+
 
 # Get last grades; if there aren't any, get them
 def get_last_grades():
@@ -65,16 +64,9 @@ def get_last_grades():
     data = get_json("data/grades.json")
     return data
 
-def send_email(subject, message):
-    if SMTP is None:
-        print("SMTP configuration isn't loaded!")
-        return False
 
-    server_address = SMTP["address"]
-    server_ssl = SMTP["ssl_port"]
+def send_email(subject, message):
     server_context = ssl.create_default_context()
-    email = SMTP["email"]
-    password = SMTP["password"]
 
     msg = """\
 Subject: {sub}
@@ -82,15 +74,16 @@ Subject: {sub}
 {mes}
     """.format(sub=subject, mes=message).encode('utf-8')
 
-    try: 
-        with smtplib.SMTP_SSL(server_address, server_ssl, context=server_context) as server:
-            server.login(email, password)
-            server.sendmail(email, email, msg)
+    try:
+        with smtplib.SMTP_SSL(SMTP_ADDRESS, SMTP_SSLPORT, context=server_context) as server:
+            server.login(SMTP_EMAIL, SMTP_PASSWORD)
+            server.sendmail(SMTP_EMAIL, SMTP_EMAIL, msg)
     except Exception as e:
         print("Failed to send e-mail!\n", e)
         return False
 
     return True
+
 
 def check_grades(last_grades):
     new_grades = get_grades()
@@ -133,7 +126,8 @@ def check_grades(last_grades):
     for course, grade in new_grades_formatted.items():
         grades += "- " + course + ": " + grade + "\n"
 
-    message = "Έχουν δημοσιευθεί {gn} νέες(α) βαθμολογίες(α)!\n\n{g}".format(gn=str(len(new_grades_formatted)), g=grades)
+    message = "Έχουν δημοσιευθεί {gn} νέες(α) βαθμολογίες(α)!\n\n{g}".format(gn=str(len(new_grades_formatted)),
+                                                                             g=grades)
 
     send_email("Νέες βαθμολογίες!", message)
 
@@ -151,28 +145,12 @@ def check_grades(last_grades):
 if __name__ == "__main__":
     time.sleep(30)
 
-    SMTP = get_json("config/smtp.json", SMTP_SCHEMA)
-
-    if SMTP is None:
-        print("Failed to load SMTP configuration!")
-        exit(1)
-
-    print("Loaded SMTP configuration")
-
-    USER = get_json("config/user.json", USER_SCHEMA)
-
-    if USER is None:
-        print("Failed to load user configuration!")
-        exit(1)
-
-    print("Loaded USER configuration")
-
-    last_grades = get_last_grades()    
+    last_grades = get_last_grades()
 
     if last_grades is None:
         print("First time setup.\nGetting grades...")
         last_grades = get_grades()
-        
+
         while last_grades is None:
             print("Failed to get grades!\nWaiting before trying again...")
             time.sleep(REFRESH * 60)
@@ -194,7 +172,7 @@ if __name__ == "__main__":
     try:
         while True:
             last_grades = check_grades(last_grades)
-            
+
             if last_grades is None:
                 print("An error has occured!")
                 exit(1)

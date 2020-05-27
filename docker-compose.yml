@@ -1,18 +1,30 @@
-version: '3'
+version: '3.7'
+
 services:
     unipi-students-api:
         image: konvoulgaris/unipi-students-api
         container_name: unipi-students-api
         restart: always
         ports:
-        - 8080:8080
+            - 8080:8080
     unipi-notify:
         build: .
         container_name: unipi-notify
         restart: always
         environment:
-        - PATH_PREFIX=/usr/src/unipi-notify/
-        - API_URL=unipi-students-api
-        - REFRESH=30
+            - PATH_PREFIX=/usr/src/unipi-notify/
+            - API_URL=unipi-students-api
+            - REFRESH=30
+            - USERNAME=
+            - PASSWORD=
+            - SMTP_ADDRESS=
+            - SMTP_SSLPORT=
+            - SMTP_EMAIL=
+            - SMTP_PASSWORD=
         depends_on:
-        - unipi-students-api
+            - unipi-students-api
+        volumes:
+        - data:/usr/src/unipi-notify/
+
+volumes:
+    data:
